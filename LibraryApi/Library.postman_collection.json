@@ -7,7 +7,7 @@
 	},
 	"item": [
 		{
-			"name": "addBook",
+			"name": "[TC001] addBook",
 			"event": [
 				{
 					"listen": "prerequest",
@@ -17,10 +17,10 @@
 							"var code = pm.globals.get(\"companyCode\");\r",
 							"const val = pm.variables.replaceIn('{{$randomInt}}');\r",
 							"pm.collectionVariables.set(\"isbn\",code+val);\r",
-							"//pm.collectionVariables.set(\"book_name\",\"How to Cook\");\r",
-							"//pm.collectionVariables.set(\"author_name\",\"JudeQ\");\r",
-							"pm.collectionVariables.set(\"book_name\", pm.iterationData.get(\"BookName\"));\r",
-							"pm.collectionVariables.set(\"author_name\", pm.iterationData.get(\"Author\"));\r",
+							"pm.collectionVariables.set(\"book_name\",\"How to Cook\");\r",
+							"pm.collectionVariables.set(\"author_name\",\"JudeQ\");\r",
+							"//pm.collectionVariables.set(\"book_name\", pm.iterationData.get(\"BookName\"));\r",
+							"//pm.collectionVariables.set(\"author_name\", pm.iterationData.get(\"Author\"));\r",
 							"\r",
 							""
 						],
@@ -32,6 +32,7 @@
 					"script": {
 						"exec": [
 							"//Assertions validations-response\r",
+							"var testCaseId = \"TC001\";\r",
 							"pm.collectionVariables.set(\"flag\",\"false\");\r",
 							"var jsonData = pm.response.json();\r",
 							"\r",
@@ -51,32 +52,28 @@
 							"    const expected_id =requestData.isbn + requestData.aisle;\r",
 							"    return expected_id;\r",
 							"}\r",
-							"\r",
-							"pm.test(\"Validate status code is 200\", function(){\r",
+							"//Validating Status code\r",
+							"pm.test(testCaseId + \" Validate status code is 200\", function(){\r",
 							"    pm.response.to.have.status(200);\r",
 							"});\r",
-							"\r",
-							"\r",
-							"    \r",
-							"\r",
-							"        pm.test(\"Validate response body to have successful message\",function(){\r",
-							"            try{\r",
-							"            pm.expect(jsonData).to.have.property(\"Msg\");\r",
-							"            pm.expect(jsonData.Msg).eql(\"successfully added\");\r",
-							"            pm.response.to.have.jsonBody(\"Msg\",\"successfully added\");\r",
-							"            pm.expect(pm.response.text()).includes(\"successfully added\"); \r",
+							"pm.test(testCaseId + \" Validate response body to have successful message\",function(){\r",
+							"    try{\r",
+							"        pm.expect(jsonData).to.have.property(\"Msg\");\r",
+							"        pm.expect(jsonData.Msg).eql(\"successfully added\");\r",
+							"        pm.response.to.have.jsonBody(\"Msg\",\"successfully added\");\r",
+							"        pm.expect(pm.response.text()).includes(\"successfully added\"); \r",
 							"        //For validation purposes, the book with isbn and aisle will be deleted if it is already in the server. There is separate Api Test case for validating book is already exists.\r",
 							"        //catch(err){\r",
 							"            //if((pm.response.text()).includes(\"Exists\")){\r",
 							"            //if(pm.expect(jsonData.Msg).contains(\"Exists\")){\r",
 							"            //\r",
-							"            }\r",
-							"            catch(err){\r",
-							"                if((pm.response.text()).includes(\"Exists\")){\r",
-							"                    cleanUpScript();\r",
-							"                    }\r",
-							"            }\r",
-							"        });\r",
+							"        }\r",
+							"        catch(err){\r",
+							"        if((pm.response.text()).includes(\"Exists\")){\r",
+							"         cleanUpScript();\r",
+							"        }\r",
+							"    }\r",
+							"});\r",
 							"\r",
 							"\r",
 							"pm.test(\"Headers, Cookies, Response time validation\", function(){\r",
@@ -123,7 +120,7 @@
 			"response": []
 		},
 		{
-			"name": "getBook",
+			"name": "[TC002] getBook",
 			"event": [
 				{
 					"listen": "prerequest",
@@ -139,7 +136,7 @@
 					"script": {
 						"exec": [
 							"const getBookResponse = pm.response.json();\r",
-							"\r",
+							"var testCaseId = \"TC002\";\r",
 							"//Assertion validations - response\r",
 							"\r",
 							"const schema = {\r",
@@ -171,17 +168,17 @@
 							"  ]\r",
 							"};\r",
 							"\r",
-							"pm.test(\"validate status code is 200\", function(){\r",
+							"pm.test( testCaseId + \" Validate status code is 200\", function(){\r",
 							"    pm.response.to.have.status(200);\r",
 							"});\r",
 							"\r",
-							"pm.test(\"validate the json response logic\",function(){\r",
+							"pm.test( testCaseId + \" Validate the json response logic\",function(){\r",
 							"    console.log(getBookResponse);\r",
 							"    console.log(getBookResponse[0].author)\r",
 							"    pm.expect(getBookResponse[0].author).eql(pm.collectionVariables.get(\"author_name\"));\r",
 							"});\r",
 							"\r",
-							"pm.test(\"validate the json response schema\", function(){\r",
+							"pm.test( testCaseId + \" Validate the json response schema\", function(){\r",
 							"    pm.response.to.have.jsonSchema(schema);\r",
 							"});"
 						],
@@ -224,17 +221,18 @@
 			"response": []
 		},
 		{
-			"name": "deleteBook",
+			"name": "[TC003] deleteBook",
 			"event": [
 				{
 					"listen": "test",
 					"script": {
 						"exec": [
 							"const jsonData = pm.response.json();\r",
-							"pm.test(\"validate status code is 200\", function(){\r",
+							"var testCaseId =\"TC003\";\r",
+							"pm.test( testCaseId + \" Validate status code is 200\", function(){\r",
 							"    pm.response.to.have.status(200);\r",
 							"});\r",
-							"pm.test(\"validate response to have success message\", function(){\r",
+							"pm.test(testCaseId + \" Validate response to have success message\", function(){\r",
 							"    pm.expect(jsonData).to.have.property(\"msg\");\r",
 							"    pm.expect(jsonData.msg).eql(\"book is successfully deleted\");\r",
 							"    if(pm.collectionVariables.get(\"flag\")==\"true\"){\r",
